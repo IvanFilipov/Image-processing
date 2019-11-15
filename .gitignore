@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# Project directory
+/project/
+
+# Lectures and tasks "as they are"
+/lectures_tasks/
