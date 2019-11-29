@@ -1,3 +1,5 @@
+"""Improve a gray scale image contrast by histogram equalization."""
+
 import cv2 as cv
 
 GRAY_IMG = "../res/gray.jpg"
