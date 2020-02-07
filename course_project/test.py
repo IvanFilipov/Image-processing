@@ -17,7 +17,7 @@ def empty_test():
 
 def run_tests():
     """Loop through the images and show the results."""
-    for i in range(0, 1):#NUM_TEST_IMG + 1):
+    for i in range(0, NUM_TEST_IMG + 1):
         img_name = "./res/img_%d.jpg" % i
         img = cv.imread(img_name, cv.IMREAD_COLOR)
         cv.imshow("img-original", img)
