@@ -68,7 +68,7 @@ def process_frame(frame):
 
     # get blue pixels and remove artifacts
     blue_mask = utils.get_clr_mask(hsv_frame, utils.Color.BLUE)
-    cv.imshow("blue-mask", blue_mask)
+    #cv.imshow("blue-mask", blue_mask)
     utils.remove_artifacts_from_mask(blue_mask, utils.Color.BLUE)
     #cv.imshow("blue-mask", blue_mask)
     if cv.countNonZero(blue_mask) < 12000:
@@ -84,5 +84,9 @@ def process_frame(frame):
     # remove the gaps
     objects_mask = utils.fill_mask(objects_mask)
     #cv.imshow("objects-mask", objects_mask)
-
-    draw_features(frame, objects_mask)
+    try:
+        draw_features(frame, objects_mask)
+    except OverflowError:
+        pass
+    except ZeroDivisionError:
+        pass
