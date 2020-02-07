@@ -36,3 +36,8 @@
 
 # Lectures and tasks "as they are"
 /lectures_tasks/
+
+# Byte-compiled / optimized / DLL files
+course_project/common/__pycache__/
+*.py[cod]
+*$py.class
