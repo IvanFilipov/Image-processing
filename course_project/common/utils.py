@@ -20,7 +20,7 @@ OPENING_STRUCT_EL_BEG = 5
 OPENING_STRUCT_EL_STEP = 5
 OPENING_STRUCT_EL_END = 50
 
-
+BGR_GREEN = (0, 255, 0)
 
 class Color(Enum):
     """Color constants"""
@@ -91,3 +91,11 @@ def fill_mask(binary_mask):
         binary_mask = mid_res
         i += OPENING_STRUCT_EL_STEP
     return binary_mask
+
+def draw_crosshair(frame):
+    """Draw a crosshair in the middle of a frame."""
+    rows, cols = frame.shape[:2]
+    center = (x_mid, y_mid) = (int(cols / 2), int(rows / 2))
+    cv.circle(frame, center, 50, BGR_GREEN, 2)
+    cv.line(frame, (x_mid, 0), (x_mid, cols - 1), BGR_GREEN, 2)
+    cv.line(frame, (0, y_mid), (cols - 1, y_mid), BGR_GREEN, 2)

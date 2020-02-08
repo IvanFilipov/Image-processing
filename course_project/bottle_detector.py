@@ -21,7 +21,7 @@ def mainloop():
     frames_cnt = 0
     timer_left = time()
 
-    while(True):
+    while True:
         ret, frame = left_cam.read()
         if not ret:
             continue
