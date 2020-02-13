@@ -32,8 +32,9 @@ def draw_features(frame, objects_mask):
        contour, angle..."""
     # extract contours
     contours, _ = cv.findContours(objects_mask, cv.RETR_TREE,  cv.CHAIN_APPROX_SIMPLE)
+    # don't draw contours if object area is two small.
+    contours = [contour for contour in contours if cv.contourArea(contour) > 10000]
     # draw them
-    #TODO: don't draw contours if object area is two small.
     cv.drawContours(frame, contours, -1, BGR_RED, 5)
     # create lines in objects' directions
     i = 0
@@ -68,7 +69,7 @@ def process_frame(frame):
 
     # get blue pixels and remove artifacts
     blue_mask = utils.get_clr_mask(hsv_frame, utils.Color.BLUE)
-    #cv.imshow("blue-mask", blue_mask)
+    #cv.imshow("blue-mask-artifacts", blue_mask)
     utils.remove_artifacts_from_mask(blue_mask, utils.Color.BLUE)
     #cv.imshow("blue-mask", blue_mask)
     if cv.countNonZero(blue_mask) < 12000:
@@ -76,11 +77,13 @@ def process_frame(frame):
 
     # get white(most lit pixels)
     white_mask = utils.get_clr_mask(hsv_frame, utils.Color.WHITE)
+    #cv.imshow("white-mask-artifacts", blue_mask)
     utils.remove_artifacts_from_mask(white_mask, utils.Color.WHITE)
-
+    #cv.imshow("white-mask", blue_mask)
+    
     # combine the two masks
     objects_mask = cv.bitwise_or(white_mask, blue_mask)
-    # cv.imshow("objects-mask", objects_mask)
+    #cv.imshow("objects-mask", objects_mask)
     # remove the gaps
     objects_mask = utils.fill_mask(objects_mask)
     #cv.imshow("objects-mask", objects_mask)

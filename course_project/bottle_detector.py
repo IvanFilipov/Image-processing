@@ -6,11 +6,14 @@ import cv2 as cv
 
 from common import processing
 
+REC_ON = True
+
 def mainloop():
     """ Grap frames from both cameras and process them."""
 
     left_cam = cv.VideoCapture(2)
-    #out = cv.VideoWriter('output.mp4', 0x7634706d, 20.0, (640, 480))
+    if REC_ON:
+        out_vid = cv.VideoWriter('output.mp4', 0x7634706d, 20.0, (640, 480))
     #left_cam.set(cv.CAP_PROP_FPS, 30)
     sleep(2)
 
@@ -39,7 +42,8 @@ def mainloop():
             timer_left = time()
 
         # save demo
-        # out.write(frame)
+        if REC_ON:
+            out_vid.write(frame)
 
         if cv.waitKey(1) == 27:
             break
