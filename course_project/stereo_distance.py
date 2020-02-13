@@ -1,14 +1,27 @@
-"""A prove of concept script for distance measurement with stereo cameras."""
+"""
+A prove of concept script for distance measurement with stereo cameras.
 
-"""Inspiration taken from: https://www.youtube.com/watch?v=sW4CVI51jDY"""
+Inspirated by: https://www.youtube.com/watch?v=sW4CVI51jDY
+
+"""
 
 import cv2 as cv
 import math
 
 from common import utils
 
+# app config
 CALIBRATE_ONLY = False
+REC_ON = True
+#
+# cameras config - from specs
+CAM_WIDTH = 640 # 720
+CAM_HEIGHT = 480
+CAM_W_ANGLE = 45 # 60
+CAM_H_ANGLE = 30
+# from the set up
 BETWEEN_CAM_DISTANCE = 18.5
+#
 
 class DistanceProcessor:
 
@@ -61,7 +74,7 @@ class DistanceProcessor:
             math.sqrt(dist_x * dist_x + dist_z * dist_z)
         # complate 3D distance (we assume that dist_x, dist_y, dist_z
         #  are radius vectors from left-cam-center)
-        return math.sqrt(sum([x * x for x in [dist_x, dist_y, dist_z]]))        
+        return math.sqrt(sum([x * x for x in [dist_x, dist_y, dist_z]]))       
 
 def process_frame(frame):
     # convert RGB -> HSV (in order to work easier with colors)
@@ -74,6 +87,7 @@ def process_frame(frame):
     #
     cv.morphologyEx(blue_mask, cv.MORPH_OPEN,\
         cv.getStructuringElement(cv.MORPH_RECT, (15, 15)), blue_mask)
+    cv.imshow("blue-mask", blue_mask)
 
     contours, _ = cv.findContours(blue_mask.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
     
@@ -127,7 +141,13 @@ def mainloop():
     left_cam  = cv.VideoCapture(2)
     right_cam = cv.VideoCapture(4)
 
-    dist_pr = DistanceProcessor(640, 480, 45, 30)
+    dist_pr = DistanceProcessor(CAM_WIDTH, CAM_HEIGHT, CAM_W_ANGLE, CAM_H_ANGLE)
+
+    if REC_ON:
+        out_vid = cv.VideoWriter(
+            'output.mp4', 0x7634706d, 20.0,
+            (CAM_WIDTH * 2, CAM_HEIGHT)
+        )
 
     while True:
         _, l_frame = left_cam.read()
@@ -139,8 +159,11 @@ def mainloop():
         if not CALIBRATE_ONLY:
             distance_processing(l_frame, r_frame, dist_pr)
 
-        cv.imshow('left cam', l_frame)
-        cv.imshow('right cam', r_frame)
+        full_frame = cv.hconcat([l_frame, r_frame])
+        cv.imshow('full vision', full_frame)
+        
+        if REC_ON:
+            out_vid.write(full_frame)
 
         if cv.waitKey(1) == 27:
             break
